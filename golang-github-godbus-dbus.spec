@@ -1,5 +1,3 @@
-%global debug_package %{nil}
-
 # Run tests in check section
 %bcond_with	check
 
@@ -23,6 +21,7 @@ BuildRequires:	compiler(go-compiler)
 %if %{with checks}
 BuildRequires:	dbus-daemon
 %endif
+BuildArch:	noarch
 
 %description
 This is a simple library that implements native Go client
@@ -53,7 +52,7 @@ building other packages which use import path with
 
 %files devel -f devel.file-list
 %license LICENSE
-%doc README.md
+%doc _examples CONTRIBUTING.md README.md
 
 #-----------------------------------------------------------------------
 
@@ -62,15 +61,9 @@ building other packages which use import path with
 
 %build
 %gobuildroot
-for cmd in $(ls -1 cmd) ; do
-	%gobuild -o _bin/$cmd %{goipath}/cmd/$cmd
-done
 
 %install
 %goinstall
-for cmd in $(ls -1 _bin) ; do
-	install -Dpm 0755 _bin/$cmd %{buildroot}%{_bindir}/$cmd
-done
 
 # install alternative name
 ln -fs . %{buildroot}%{_datadir}/gocode/src/%{goaltipaths}
@@ -80,5 +73,4 @@ echo \"%{_datadir}/gocode/src/%{goaltipaths}\" >> devel.file-list
 %if %{with check}
 %gochecks
 %endif
-
 
